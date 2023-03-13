@@ -6,14 +6,15 @@ public class Thief : MonoBehaviour
 {
     public Transform movePosition;
     public Transform runPosition;
-    private float moveSpeed = 1;    
+    private float moveSpeed = 1;
+    private float runSpeed = 2;
     private float waitTime = 1;
 
     private void Update()
     {
         Move(movePosition);
     }
- 
+
     private void Move(Transform pos)
     {
         transform.position = Vector2.MoveTowards(transform.position, pos.position, moveSpeed * Time.deltaTime);
@@ -21,10 +22,10 @@ public class Thief : MonoBehaviour
 
     public void ChangePosition()
     {
-        StartCoroutine(waite());
+        StartCoroutine(Waite());
     }
 
-    IEnumerator waite()
+    private IEnumerator Waite()
     {
         var waite = new WaitForSeconds(waitTime);
         yield return waite;
@@ -35,6 +36,6 @@ public class Thief : MonoBehaviour
         {
             spritesRenderer[i].flipX = true;
         }
-        moveSpeed = 2;
+        moveSpeed = runSpeed;
     }
 }
