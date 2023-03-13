@@ -4,38 +4,33 @@ using UnityEngine;
 
 public class Thief : MonoBehaviour
 {
-
     public Transform movePosition;
     public Transform runPosition;
-    float moveSpeed = 1;
- 
+    private float moveSpeed = 1;    
+    private float waitTime = 1;
 
-    void Start()
-    {
-         
-    }
-
-     
-    void Update()
+    private void Update()
     {
         Move(movePosition);
     }
-
-    void Move(Transform pos) 
+ 
+    private void Move(Transform pos)
     {
-        transform.position = Vector2.MoveTowards(transform.position,pos.position, moveSpeed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, pos.position, moveSpeed * Time.deltaTime);
     }
 
-    public void ChangePosition() 
-    {       
-        StartCoroutine(waite());      
+    public void ChangePosition()
+    {
+        StartCoroutine(waite());
     }
 
-    IEnumerator waite() 
+    IEnumerator waite()
     {
-        yield return new WaitForSeconds(1);
+        var waite = new WaitForSeconds(waitTime);
+        yield return waite;
         movePosition = runPosition;
         SpriteRenderer[] spritesRenderer = GetComponentsInChildren<SpriteRenderer>();
+
         for (int i = 0; i < spritesRenderer.Length; i++)
         {
             spritesRenderer[i].flipX = true;
