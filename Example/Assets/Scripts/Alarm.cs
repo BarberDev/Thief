@@ -2,59 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 
 public class Alarm : MonoBehaviour
 {
-    private AudioSource signal;
+    [SerializeField] private Home _home;
+ 
+    private AudioSource _signal;
+    private Coroutine _corutine;
 
-    private float startingVolume = 0;
-    private float maxVolume = 1;
-    private float volumeStep = 0.05f;
-    private float waiteTime = 0.1f;
+    private void OnEnable()
+    {      
+        _home.StateChanged += OnStateChanged;
+    }
 
-    private bool isCorutineRun = false;
-    private bool isAlarmOn = false;
+    private void OnDisable()
+    {
+        _home.StateChanged -= OnStateChanged;
+    }
 
     private void Start()
     {
-        signal = GetComponent<AudioSource>();
+        _signal = GetComponent<AudioSource>();      
     }
 
-    public void Alarming()
-    {
-        if (isAlarmOn)
+    private void OnStateChanged(float value) 
+    {       
+        if (_corutine != null) 
         {
-
-            if (isCorutineRun == true)
-            {
-                StopAllCoroutines();
-                StartCoroutine(Volum(-volumeStep));
-                isCorutineRun = false;
-                isAlarmOn = false;                
-            }
+            StopCoroutine(_corutine);
         }
-        else
-        {
-            if (isCorutineRun == false)
-            {
-                StartCoroutine(Volum(volumeStep));
-                isCorutineRun = true;
-                isAlarmOn = true;
-                signal.Play();
-            }
-        }
+        _corutine = StartCoroutine(VolumeChange(value));
     }
 
-    private IEnumerator Volum(float volum)
-    {
-        var waiteSeconds = new WaitForSeconds(waiteTime);
-        int maxVolumeStep = 10;
-
-        for (int i = 0; i < maxVolumeStep; i++)
+    private IEnumerator VolumeChange(float volum)
+    {             
+        while (_signal.volume != volum ) 
         {
-            signal.volume += Mathf.MoveTowards(startingVolume, volum, maxVolume);
-
-            yield return waiteSeconds;
+            _signal.volume = Mathf.MoveTowards(_signal.volume, volum, Time.deltaTime);
+            yield return null;
         }
-    }
+    }    
 }

@@ -5,21 +5,26 @@ using UnityEngine.Events;
 
 public class Home : MonoBehaviour
 {
-    public UnityEvent Signaling;
+    [SerializeField] private Thief thief;
+    public UnityAction<float> StateChanged;
    
+    int value = 1;  
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<Thief>()) 
+        if (collision.gameObject.GetComponent<Thief>())
         {
-            Signaling.Invoke();
-        }      
+            StateChanged.Invoke(value);
+            thief.ChangePosition();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.GetComponent<Thief>())
         {
-            Signaling.Invoke();
+            StateChanged.Invoke(-value);
+            
         }
     }
 }
